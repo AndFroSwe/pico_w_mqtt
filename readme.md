@@ -3,6 +3,8 @@
 Raspberry Pi Pico W executable for MQTT communication. Is based on the [LwIP](https://savannah.nongnu.org/projects/lwip/) library
 implementation that comes bundled with [pico_sdk](https://github.com/raspberrypi/pico-sdk).
 
+The purpose is to have a basic implementation of the API to build upon.
+
 ## Usage
 
 The pico_sdk is included as a submodule and needs to be pulled along with this repo.
