@@ -10,7 +10,7 @@ The purpose is to have a basic implementation of the API to build upon.
 The pico_sdk is included as a submodule and needs to be pulled along with this repo.
 
 ```
-  git pull https://github.com/AndFroSwe/pico_w_mqtt.git --recurse-submodules
+  git clone https://github.com/AndFroSwe/pico_w_mqtt.git --recurse-submodules
 ```
 
 Configure and build the repo using `cmake` . The project is setup to use the folder __build__ for artefacts. Remember to add the `PICO_BOARD` definition on configuring.
