@@ -1,2 +1,8 @@
+# CMake build files
 build
+
+# IDE files
 .cache
+
+# Doxygen 
+docs

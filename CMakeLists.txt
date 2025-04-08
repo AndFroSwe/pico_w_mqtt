@@ -7,11 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(lib/pico-sdk/pico_sdk_init.cmake)
 
-project(testpico)
+project(pico_w_mqtt)
 
+# For clang static checkers and linters
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 pico_sdk_init()
 
-add_subdirectory(lib)
 add_subdirectory(src)
