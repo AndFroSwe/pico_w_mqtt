@@ -33,15 +33,18 @@
 #endif
 
 // Custom struct definitions
+
+/**
+ * @brief All data related to mqtt connection
+ */
 typedef struct {
-  mqtt_client_t *mqtt_client;
-  struct mqtt_connect_client_info_t mqtt_client_info;
-  ip_addr_t mqtt_server_address;
-  int mqtt_server_port;
-  char data[MQTT_OUTPUT_RINGBUF_SIZE];
-  char topic[MQTT_TOPIC_LEN];
-  bool connect_done;
-  int published_messages;
+  mqtt_client_t *mqtt_client; ///< Native mqtt client object
+  struct mqtt_connect_client_info_t mqtt_client_info; ///< Native client info
+  ip_addr_t mqtt_server_address;                      ///< Broker address
+  int mqtt_server_port;                               ///< Broker port
+  char topic[MQTT_TOPIC_LEN];                         ///< Topic to publish to
+  bool connect_done;                                  ///< Status of connection
+  int published_messages; ///< Simple pay load used when publishing
 } mqtt_client_data_t;
 
 // Forward declarations
@@ -53,9 +56,16 @@ static void publish_worker_fn(async_context_t *context,
                               async_at_time_worker_t *worker);
 
 // Global objects
+/**
+ * @brief Worker object that does asynchronous work
+ */
 static async_at_time_worker_t publish_worker = {.do_work = publish_worker_fn};
 
 // Function definitions
+/**
+ * @brief Setup client and start workers
+ * @param state Pointer to the state struct
+ */
 static void start_client(mqtt_client_data_t *state) {
   state->mqtt_client = mqtt_client_new();
   if (!state->mqtt_client) {
@@ -76,9 +86,15 @@ static void start_client(mqtt_client_data_t *state) {
   cyw43_arch_lwip_end();
 }
 
+/**
+ * @brief Connection callback
+ * @param client Native mqtt client
+ * @param void User supplied arg. Here the mqtt_client_data_t
+ * @param status Native mqtt connection status
+ */
 static void mqtt_connection_cb(mqtt_client_t *client, void *arg,
                                mqtt_connection_status_t status) {
-  mqtt_client_data_t *state = (mqtt_client_data_t *)arg;
+  mqtt_client_data_t *state = (mqtt_client_data_t *)arg; // Cast user data
   if (status == MQTT_CONNECT_ACCEPTED) {
     state->connect_done = true;
     state->published_messages = 0;
@@ -97,12 +113,24 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg,
   }
 }
 
+/**
+ * @brief Publish request callback
+ * @param arg User supplied argument
+ * @param Native error type
+ */
 static void pub_request_cb(void *arg, err_t err) {
   if (err != 0) {
     printf("pub_request_cb failed %d", err);
   }
 }
 
+/**
+ * @brief The actual work the worker does
+ * @param context Native async context
+ * @param worker Native async worker
+ *
+ * Based on native async worker object. This is where the actual work happens.
+ */
 static void publish_worker_fn(async_context_t *context,
                               async_at_time_worker_t *worker) {
   mqtt_client_data_t *state = (mqtt_client_data_t *)worker->user_data;
@@ -114,6 +142,9 @@ static void publish_worker_fn(async_context_t *context,
   async_context_add_at_time_worker_in_ms(context, worker, 1000);
 }
 
+/**
+ * @brief Good old main
+ */
 int main(void) {
   printf("Initializing Pico W...");
   stdio_init_all();
